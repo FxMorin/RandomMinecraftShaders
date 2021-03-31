@@ -1,14 +1,17 @@
 #version 150
 
+#moj_import <fog.glsl>
+
 uniform sampler2D Sampler0;
-uniform sampler2D Sampler2;
 
 uniform vec4 ColorModulator;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
 
+in float vertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;
-in vec2 texCoord2;
-in vec4 normal;
 
 out vec4 fragColor;
 
@@ -28,6 +31,7 @@ vec3 smoothRainbow (float x)
 }
 
 void main() {
-    vec3 color = smoothRainbow(texCoord0.x);
-    fragColor = vec4(color,0.3);
+    vec4 color = vec4(smoothRainbow(texCoord0.x),0.3);
+    color *= vertexColor * ColorModulator;
+    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }
