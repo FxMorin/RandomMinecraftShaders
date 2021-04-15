@@ -4,12 +4,12 @@
 
 uniform sampler2D Sampler0;
 
+uniform mat4 ProjMat;
 uniform vec4 ColorModulator;
 uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
 
-in float vertexDistance;
 in vec4 vertexColor;
 in vec2 texCoord0;
 
@@ -33,5 +33,6 @@ vec3 smoothRainbow (float x)
 void main() {
     vec4 color = vec4(smoothRainbow(texCoord0.x),0.3);
     color *= vertexColor * ColorModulator;
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    float fragmentDistance = -ProjMat[3].z / ((gl_FragCoord.z) * -2.0 + 1.0 - ProjMat[2].z);
+    fragColor = linear_fog(color, fragmentDistance, FogStart, FogEnd, FogColor);
 }
